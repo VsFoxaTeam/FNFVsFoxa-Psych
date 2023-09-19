@@ -331,8 +331,7 @@ class Controls extends FlxActionSet
 		add(_pause);
 		add(_reset);
 
-		for (action in digitalActions)
-			byName[action.name] = action;
+		for (action in digitalActions) byName[action.name] = action;
 
 		setKeyboardScheme(scheme, false);
 	}

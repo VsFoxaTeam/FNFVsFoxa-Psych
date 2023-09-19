@@ -53,7 +53,6 @@ class CreditsState extends MusicBeatState
 		add(grpOptions);
 
 		#if MODS_ALLOWED
-		//trace("finding mod shit");
 		for (folder in Paths.getModDirectories())
 		{
 			var creditsFile:String = Paths.mods(folder + '/data/credits.txt');
@@ -88,9 +87,9 @@ class CreditsState extends MusicBeatState
 			['Psych Engine Team'],
 			['Shadow Mario',		'shadowmario',		'Main Programmer of Psych Engine',						'https://twitter.com/Shadow_Mario_',	'444444'],
 			['RiverOaken',			'riveroaken',		'Main Artist/Animator of Psych Engine',					'https://twitter.com/river_oaken',		'C30085'],
-			['shubs',				'shubs',			'Additional Programmer of Psych Engine',				'https://twitter.com/yoshubs',			'279ADC'],
 			[''],
 			['Former Engine Members'],
+			['shubs',				'shubs',			'Ex-Programmer of Psych Engine',				'https://twitter.com/yoshubs',			'279ADC'],
 			['bb-panzu',			'bb-panzu',			'Ex-Programmer of Psych Engine',						'https://twitter.com/bbsub3',			'389A58'],
 			[''],
 			['Engine Contributors'],
@@ -118,11 +117,8 @@ class CreditsState extends MusicBeatState
 			optionText.isMenuItem = true;
 			optionText.screenCenter(X);
 			optionText.yAdd -= 70;
-			if(isSelectable) {
-				optionText.x -= 70;
-			}
+			if(isSelectable) optionText.x -= 70;
 			optionText.forceX = optionText.x;
-			//optionText.yMult = 90;
 			optionText.targetY = i;
 			grpOptions.add(optionText);
 
@@ -175,10 +171,7 @@ class CreditsState extends MusicBeatState
 	var holdTime:Float = 0;
 	override function update(elapsed:Float)
 	{
-		if (FlxG.sound.music.volume < 0.7)
-		{
-			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
-		}
+		if (FlxG.sound.music.volume < 0.7) FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
 
 		if(!quitting)
 		{
