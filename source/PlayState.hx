@@ -2884,6 +2884,10 @@ class PlayState extends MusicBeatState
 				char.idleSuffix = value2;
 				char.recalculateDanceIdle();
 
+			case 'Change Icon':
+				iconP1.changeIcon(value1);
+				iconP2.changeIcon(value2);
+
 			case 'Screen Shake':
 				var valuesArray:Array<String> = [value1, value2];
 				var targetsArray:Array<FlxCamera> = [camGame, camHUD];
@@ -3314,6 +3318,8 @@ class PlayState extends MusicBeatState
 		}
 		note.rating = daRating;
 
+		callOnLuas("onJudgementCalculation", [noteDiff, rating]);
+
 		if(daRating == 'sick' && !note.noteSplashDisabled) spawnNoteSplashOnNote(note);
 
 		if(!practiceMode && !cpuControlled) {
@@ -3473,6 +3479,10 @@ class PlayState extends MusicBeatState
 		});
 	}
 
+	public function bopIcon(icon:HealthIcon) {
+		icon.scale.set(1.2, 1.2);
+	}
+
 	private function onKeyPress(event:KeyboardEvent):Void
 	{
 		var eventKey:FlxKey = event.keyCode;
@@ -3528,7 +3538,7 @@ class PlayState extends MusicBeatState
 
 					}
 				}
-				else if (canMiss) {
+				else if (canMiss && !inCutscene) {
 					noteMissPress(key);
 					callOnLuas('noteMissPress', [key]);
 				}
@@ -3924,6 +3934,8 @@ class PlayState extends MusicBeatState
 	}
 
 	public function spawnNoteSplash(x:Float, y:Float, data:Int, ?note:Note = null) {
+		callOnLuas('onNoteSplashSpawned', [x, y, data]);
+
 		var skin:String = 'noteSplashes';
 		if(PlayState.SONG.splashSkin != null && PlayState.SONG.splashSkin.length > 0) skin = PlayState.SONG.splashSkin;
 		
@@ -4171,10 +4183,19 @@ class PlayState extends MusicBeatState
 				setOnLuas('curBpm', Conductor.bpm);
 				setOnLuas('crochet', Conductor.crochet);
 				setOnLuas('stepCrochet', Conductor.stepCrochet);
+				callOnLuas('onChangeBPM', []);
 			}
+			setOnLuas('lengthInSteps', SONG.notes[Math.floor(curStep / 16)].lengthInSteps);
+			setOnLuas('curSection', Math.floor(curStep / 16));
+			setOnLuas('changeBPM', SONG.notes[Math.floor(curStep / 16)].changeBPM);
 			setOnLuas('mustHitSection', SONG.notes[Math.floor(curStep / 16)].mustHitSection);
 			setOnLuas('altAnim', SONG.notes[Math.floor(curStep / 16)].altAnim);
 			setOnLuas('gfSection', SONG.notes[Math.floor(curStep / 16)].gfSection);
+		}
+
+
+		if (curBeat % 4 == 0) {
+			callOnLuas('onSectionHit', []);
 		}
 
 		if (generatedMusic && PlayState.SONG.notes[Std.int(curStep / 16)] != null && !endingSong && !isCameraOnForcedPos)

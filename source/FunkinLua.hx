@@ -103,6 +103,7 @@ class FunkinLua {
 		set('luaDebugMode', false);
 		set('luaDeprecatedWarnings', true);
 		set('inChartEditor', false);
+		set('scriptName', script);
 
 		// Song/Week shit
 		set('curBpm', Conductor.bpm);
@@ -137,6 +138,9 @@ class FunkinLua {
 		// PlayState cringe ass nae nae bullcrap
 		set('curBeat', 0);
 		set('curStep', 0);
+		set('curSection', 0);
+		set('lengthInSteps', 0);
+		set('changeBPM', false);
 
 		set('score', 0);
 		set('misses', 0);
@@ -271,7 +275,7 @@ class FunkinLua {
 				PlayState.instance.luaArray.push(new FunkinLua(cervix)); 
 				return;
 			}
-			luaTrace("Script doesn't exist!");
+			luaTrace("Script doesn't exist! " + cervix);
 		});
 		Lua_helper.add_callback(lua, "removeLuaScript", function(luaFile:String, ?ignoreAlreadyRunning:Bool = false) { //would be dope asf. 
 			var cervix = luaFile + ".lua";
@@ -301,7 +305,7 @@ class FunkinLua {
 				}
 				return;
 			}
-			luaTrace("Script doesn't exist!");
+			luaTrace("Script doesn't exist! " + cervix);
 		});
 
 		Lua_helper.add_callback(lua, "setVar", function(varName:String, value:Dynamic) {
@@ -967,6 +971,78 @@ class FunkinLua {
 			}
 			PlayState.instance.addCharacterToList(name, charType);
 		});
+
+		//MATH FUNCTIONS
+
+		Lua_helper.add_callback(lua, "remapToRange", function(val:Float, s1:Float, st1:Float, s2:Float, st2:Float) {
+			return FlxMath.remapToRange(val, s1, st1, s2, st2);
+		});
+		Lua_helper.add_callback(lua, "lerp", function(a:Float, b:Float, ratio:Float) { //funny word
+			return FlxMath.lerp(a, b, ratio);
+		});
+		Lua_helper.add_callback(lua, "bound", function(v:Float, mi:Float, ma:Float) {
+			return FlxMath.bound(v, mi, ma);
+		});
+		Lua_helper.add_callback(lua, "roundDecimal", function(val:Float, precision:Int) {
+			return FlxMath.roundDecimal(val, precision);
+		});
+		Lua_helper.add_callback(lua, "wrap", function(v:Int, mi:Int, ma:Int) {
+			return FlxMath.wrap(v, mi, ma);
+		});
+
+		//DATE FUNCTIONS
+
+		Lua_helper.add_callback(lua, "getDate", function(utc:Bool = false) {
+			var date:Date = Date.now();
+			if (utc) return date.getUTCDate();
+			else return date.getDate();
+		});
+
+		Lua_helper.add_callback(lua, "getDay", function(utc:Bool = false) {
+			var date:Date = Date.now();
+			if (utc) return date.getUTCDay();
+			else return date.getDay();
+		});
+
+		Lua_helper.add_callback(lua, "getMonth", function(utc:Bool = false) {
+			var date:Date = Date.now();
+			if (utc) return date.getUTCMonth();
+			else return date.getMonth();
+		});
+
+		Lua_helper.add_callback(lua, "getHours", function(utc:Bool = false) {
+			var date:Date = Date.now();
+			if (utc) return date.getUTCHours();
+			else return date.getHours();
+		});
+
+		Lua_helper.add_callback(lua, "getFullYear", function(utc:Bool = false) {
+			var date:Date = Date.now();
+			if (utc) return date.getUTCFullYear();
+			else return date.getFullYear();
+		});
+
+		Lua_helper.add_callback(lua, "getMinutes", function(utc:Bool = false) {
+			var date:Date = Date.now();
+			if (utc) return date.getUTCMinutes();
+			else return date.getMinutes();
+		});
+
+		Lua_helper.add_callback(lua, "getSeconds", function(utc:Bool = false) {
+			var date:Date = Date.now();
+			if (utc) return date.getUTCSeconds();
+			else return date.getSeconds();
+		});
+
+		Lua_helper.add_callback(lua, "date_now", function(utc:Bool = false) {
+			var date = Date.now();
+			return date.toString();
+		});
+
+		Lua_helper.add_callback(lua, "boundTo", function(val:Float, mi:Float, ma:Float) {
+			return CoolUtil.boundTo(val, mi, ma);
+		});
+
 		Lua_helper.add_callback(lua, "precacheImage", function(name:String) {
 			Paths.returnGraphic(name);
 		});
@@ -980,7 +1056,6 @@ class FunkinLua {
 			var value1:String = arg1;
 			var value2:String = arg2;
 			PlayState.instance.triggerEventNote(name, value1, value2);
-			//trace('Triggered event: ' + name + ', ' + value1 + ', ' + value2);
 		});
 
 		Lua_helper.add_callback(lua, "startCountdown", function(variable:String) {
@@ -1154,6 +1229,25 @@ class FunkinLua {
 				case 'gf' | 'girlfriend': PlayState.instance.gf.dance();
 				default: PlayState.instance.boyfriend.dance();
 			}
+		});
+
+		Lua_helper.add_callback(lua, "bopIcon", function(icon:String) {
+			for (healthicon in iconFromString(icon)) {
+				PlayState.instance.bopIcon(healthicon);
+			}
+		});
+
+		Lua_helper.add_callback(lua, "setObjectOrigin", function(obj:String, x:Float, y:Float) {
+			var object:Dynamic = null;
+			if(PlayState.instance.modchartSprites.exists(obj)) {
+				object = PlayState.instance.modchartSprites.get(obj);
+			} else if(PlayState.instance.modchartTexts.exists(obj)) {
+				object = PlayState.instance.modchartTexts.get(obj);
+			} else {
+				object = Reflect.getProperty(getInstance(), obj);
+			}
+
+			object.origin.set(x, y);
 		});
 
 		Lua_helper.add_callback(lua, "makeLuaSprite", function(tag:String, image:String, x:Float, y:Float) {
@@ -2170,6 +2264,14 @@ class FunkinLua {
 			case 'camother' | 'other': return PlayState.instance.camOther;
 		}
 		return PlayState.instance.camGame;
+	}
+
+	function iconFromString(icon:String):Array<HealthIcon> {
+		switch(icon.toLowerCase()) {
+			case '1' | 'iconp1': return [PlayState.instance.iconP1];
+			case '2' | 'iconp2': return [PlayState.instance.iconP2];
+		}
+		return [PlayState.instance.iconP1, PlayState.instance.iconP2];
 	}
 
 	public function luaTrace(text:String, ignoreCheck:Bool = false, deprecated:Bool = false) {

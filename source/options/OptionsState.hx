@@ -30,9 +30,12 @@ using StringTools;
 class OptionsState extends MusicBeatState
 {
 	var options:Array<String> = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay'];
+
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private static var curSelected:Int = 0;
 	public static var menuBG:FlxSprite;
+
+	public static var fromPlayState:Bool = false;
 
 	function openSelectedSubstate(label:String) {
 		switch(label) {
@@ -107,9 +110,15 @@ class OptionsState extends MusicBeatState
 			changeSelection(-FlxG.mouse.wheel);
 		}
 
-		if (controls.BACK) {
+		if (controls.BACK) {			
 			FlxG.sound.play(Paths.sound('cancelMenu'));
-			MusicBeatState.switchState(new MainMenuState());
+			if (PlayState.instance != null && OptionsState.fromPlayState) {
+				FlxG.sound.music.volume = 0.0;
+				MusicBeatState.switchState(new PlayState());
+				OptionsState.fromPlayState = false;
+			} else {
+				MusicBeatState.switchState(new MainMenuState());
+			}
 		}
 
 		if (controls.ACCEPT) {

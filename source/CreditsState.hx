@@ -37,6 +37,8 @@ class CreditsState extends MusicBeatState
 
 	var offsetThing:Float = -75;
 
+	var noLink:Bool;
+
 	override function create()
 	{
 		#if desktop
@@ -93,6 +95,7 @@ class CreditsState extends MusicBeatState
 			['bb-panzu',			'bb-panzu',			'Ex-Programmer of Psych Engine',						'https://twitter.com/bbsub3',			'389A58'],
 			[''],
 			['Engine Contributors'],
+			['CrowPlexus',				'gabriela',			'Main Menu JSON',	'https://github.com/crowplexus',			'AA32FE'],
 			['iFlicky',				'iflicky',			'Delay/Combo Menu Song Composer\nand Dialogue Sounds',	'https://twitter.com/flicky_i',			'AA32FE'],
 			['SqirraRNG',			'gedehari',			'Chart Editor\'s Sound Waveform base',					'https://twitter.com/gedehari',			'FF9300'],
 			['PolybiusProxy',		'polybiusproxy',	'.MP4 Video Loader Extension',							'https://twitter.com/polybiusproxy',	'FFEAA6'],
@@ -207,9 +210,14 @@ class CreditsState extends MusicBeatState
 				}
 			}
 
-			if(controls.ACCEPT) {
-				CoolUtil.browserLoad(creditsStuff[curSelected][3]);
+			if (creditsStuff[curSelected][3] == 'nolink') noLink = true;
+			else noLink = false;
+			if (noLink){
+				if (controls.ACCEPT) FlxG.sound.play(Paths.sound('cancelMenu'));
+			}else{
+				if (controls.ACCEPT) CoolUtil.browserLoad(creditsStuff[curSelected][3]);
 			}
+
 			if (controls.BACK)
 			{
 				if(colorTween != null) {

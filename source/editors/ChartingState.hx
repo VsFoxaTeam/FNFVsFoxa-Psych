@@ -80,6 +80,7 @@ class ChartingState extends MusicBeatState
 		['Add Camera Zoom', "Used on MILF on that one \"hard\" part\nValue 1: Camera zoom add (Default: 0.015)\nValue 2: UI zoom add (Default: 0.03)\nLeave the values blank if you want to use Default."],
 		['BG Freaks Expression', "Should be used only in \"school\" Stage!"],
 		['Trigger BG Ghouls', "Should be used only in \"schoolEvil\" Stage!"],
+		['Change Icon', "Value 1: Player Icon\nValue 2: Opponent Icon"],
 		['Play Animation', "Plays an animation on a Character,\nonce the animation is completed,\nthe animation changes to Idle\n\nValue 1: Animation to play.\nValue 2: Character (Dad, BF, GF)"],
 		['Camera Follow Pos', "Value 1: X\nValue 2: Y\n\nThe camera won't change the follow point\nafter using this, for getting it back\nto normal, leave both values blank."],
 		['Alt Idle Animation', "Sets a specified suffix after the idle animation name.\nYou can use this to trigger 'idle-alt' if you set\nValue 2 to -alt\n\nValue 1: Character to set (Dad, BF or GF)\nValue 2: New suffix (Leave it blank to disable)"],
@@ -530,6 +531,22 @@ class ChartingState extends MusicBeatState
 		player2DropDown.selectedLabel = _song.player2;
 		blockPressWhileScrolling.push(player2DropDown);
 
+		CoolUtil.difficulties = CoolUtil.defaultDifficulties.copy();
+
+		var difficultyDropDown = new FlxUIDropDownMenuCustom(stageDropDown.x, gfVersionDropDown.y, FlxUIDropDownMenuCustom.makeStrIdLabelArray(CoolUtil.difficulties, true), function(difficulty:String)
+		{
+			if (PlayState.storyDifficulty != Std.parseInt(difficulty)) {
+				PlayState.storyDifficulty = Std.parseInt(difficulty);
+				try {
+					loadJson(_song.song.toLowerCase());
+				} catch (e:Any) {
+					trace ("File " + _song.song.toLowerCase() + CoolUtil.getDifficultyFilePath() + " is not found.");
+				}
+			}
+		});
+		difficultyDropDown.selectedLabel = CoolUtil.difficulties[PlayState.storyDifficulty];
+		blockPressWhileScrolling.push(difficultyDropDown);
+
 		#if MODS_ALLOWED
 		var directories:Array<String> = [Paths.mods('stages/'), Paths.mods(Paths.currentModDirectory + '/stages/'), Paths.getPreloadPath('stages/')];
 		#else
@@ -609,12 +626,14 @@ class ChartingState extends MusicBeatState
 		tab_group_song.add(new FlxText(player2DropDown.x, player2DropDown.y - 15, 0, 'Opponent:'));
 		tab_group_song.add(new FlxText(player3DropDown.x, player3DropDown.y - 15, 0, 'Girlfriend:'));
 		tab_group_song.add(new FlxText(player1DropDown.x, player1DropDown.y - 15, 0, 'Boyfriend:'));
+		tab_group_song.add(new FlxText(difficultyDropDown.x, difficultyDropDown.y - 15, 0, 'Difficulty:'));
 		tab_group_song.add(new FlxText(stageDropDown.x, stageDropDown.y - 15, 0, 'Stage:'));
 		tab_group_song.add(new FlxText(noteSkinInputText.x, noteSkinInputText.y - 15, 0, 'Note Texture:'));
 		tab_group_song.add(new FlxText(noteSplashesInputText.x, noteSplashesInputText.y - 15, 0, 'Note Splashes Texture:'));
 		tab_group_song.add(player2DropDown);
 		tab_group_song.add(player3DropDown);
 		tab_group_song.add(player1DropDown);
+		tab_group_song.add(difficultyDropDown);
 		tab_group_song.add(stageDropDown);
 
 		UI_box.addGroup(tab_group_song);
@@ -2669,7 +2688,7 @@ class ChartingState extends MusicBeatState
 			_file.addEventListener(Event.COMPLETE, onSaveComplete);
 			_file.addEventListener(Event.CANCEL, onSaveCancel);
 			_file.addEventListener(IOErrorEvent.IO_ERROR, onSaveError);
-			_file.save(data.trim(), Paths.formatToSongPath(_song.song) + ".json");
+			_file.save(data.trim(), Paths.formatToSongPath(_song.song) + (CoolUtil.getDifficultyFilePath() == null ? CoolUtil.getDifficultyFilePath() : '') + ".json");
 		}
 	}
 	
