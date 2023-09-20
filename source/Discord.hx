@@ -15,20 +15,19 @@ class DiscordClient
 	public static var isInitialized:Bool = false;
 	public function new()
 	{
-		trace("Discord Client starting...");
+		trace("Discord: Starting...");
 		DiscordRpc.start({
 			clientID: "863222024192262205",
 			onReady: onReady,
 			onError: onError,
 			onDisconnected: onDisconnected
 		});
-		trace("Discord Client started.");
+		trace("Discord: Started.");
 
 		while (true)
 		{
 			DiscordRpc.process();
 			sleep(2);
-			//trace("Discord Client Update");
 		}
 
 		DiscordRpc.shutdown();
@@ -37,6 +36,7 @@ class DiscordClient
 	public static function shutdown()
 	{
 		DiscordRpc.shutdown();
+		trace('Discord: Has shutdown.');
 	}
 	
 	static function onReady()
@@ -45,18 +45,18 @@ class DiscordClient
 			details: "In the Menus",
 			state: null,
 			largeImageKey: 'icon',
-			largeImageText: "Psych Engine"
+			largeImageText: "Vs. Foxa 3.0"
 		});
 	}
 
 	static function onError(_code:Int, _message:String)
 	{
-		trace('Error! $_code : $_message');
+		trace('Discord: Error! $_code : $_message');
 	}
 
 	static function onDisconnected(_code:Int, _message:String)
 	{
-		trace('Disconnected! $_code : $_message');
+		trace('Discord: Disconnected! $_code : $_message');
 	}
 
 	public static function initialize()
@@ -65,7 +65,7 @@ class DiscordClient
 		{
 			new DiscordClient();
 		});
-		trace("Discord Client initialized");
+		trace("Discord: Initialized!");
 		isInitialized = true;
 	}
 
@@ -73,23 +73,18 @@ class DiscordClient
 	{
 		var startTimestamp:Float = if(hasStartTimestamp) Date.now().getTime() else 0;
 
-		if (endTimestamp > 0)
-		{
-			endTimestamp = startTimestamp + endTimestamp;
-		}
+		if (endTimestamp > 0) endTimestamp = startTimestamp + endTimestamp;
 
 		DiscordRpc.presence({
 			details: details,
 			state: state,
 			largeImageKey: 'icon',
-			largeImageText: "Engine Version: " + MainMenuState.psychEngineVersion,
+			largeImageText: "Vs. Foxa 3.0",
 			smallImageKey : smallImageKey,
 			// Obtained times are in milliseconds so they are divided so Discord can use it
 			startTimestamp : Std.int(startTimestamp / 1000),
             endTimestamp : Std.int(endTimestamp / 1000)
 		});
-
-		//trace('Discord RPC Updated. Arguments: $details, $state, $smallImageKey, $hasStartTimestamp, $endTimestamp');
 	}
 
 	#if LUA_ALLOWED

@@ -2,7 +2,7 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Friday Night Funkin': Psych Engine Foxa" file="PsychFoxa" packageName="com.foxatheartist.psychfoxa" package="com.foxatheartist.psychfoxa" main="Main" version="0.2.8" company="FoxaTheArtist" />
+	<app title="Friday Night Funkin': Psych Engine Foxa" file="PsychFoxa" packageName="com.foxateam.psychfoxa" package="com.foxateam.psychfoxa" main="Main" version="0.2.8" company="Foxateam" />
 
 	<!-- NOTE TO SELF: DISABLE THIS IF ISSUES ARE FOUND -->
 	<haxedef name="LINC_LUA_RELATIVE_DYNAMIC_LIB"/>
@@ -135,10 +135,19 @@
 	<!--Enable the Flixel core recording system-->
 	<haxedef name="FLX_RECORD" if="debug" />
 
+	<!--Enable a new and optimized OpenFL game loop (boosts performance, and takes less memory)-->
+	<haxedef name="queue_experimental_optimization" />
+
 	<!--Optimise inputs, be careful you will get null errors if you don't use conditionals in your game-->
 	<!-- <haxedef name="FLX_NO_MOUSE" if="mobile" /> -->
 	<!-- <haxedef name="FLX_NO_KEYBOARD" if="mobile" /> -->
 	<!-- <haxedef name="FLX_NO_TOUCH" if="desktop" /> -->
+
+	<haxedef name="HXCPP_GC_SUMMARY" if="cpp"/>
+	<haxedef name="HXCPP_GC_MOVING" if="cpp" />
+	<haxedef name="HXCPP_GC_GENERATIONAL" if="cpp" />
+
+	<haxedef name="openfl_dpi_aware" />
 
 	<!--Disable the Flixel core focus lost screen-->
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
@@ -152,7 +161,12 @@
 	<!--Enable this for Nape release builds for a serious peformance improvement-->
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
 
+	<haxedef name="HXCPP_CHECK_POINTER" />
+	<haxedef name="HXCPP_STACK_LINE" />
+	<haxedef name="HXCPP_STACK_TRACE" />
 	<haxedef name='no-deprecation-warnings' />
+
+	<error value="Nintendo Switch is not supported. Seriously, why would you do that?" if="switch" />
 
 	<!--Macro fixes-->
 	<haxeflag name="--macro" value="allowPackage('flash')" />

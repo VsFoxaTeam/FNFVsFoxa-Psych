@@ -140,12 +140,14 @@ class CoolUtil
 		#end
 	}
 
-	/** Quick Function to Fix Save Files for Flixel 5
-		if you are making a mod, you are gonna wanna change "ShadowMario" to something else
-		so Base Psych saves won't conflict with yours
-		@BeastlyGabi
+	/** 
+	 * Quick Function to Fix Save Files for Flixel 5
+		if you are making a mod, you are gonna wanna change "FoxaTeam" to something else
+		so Vs. Foxa saves won't conflict with yours
+		
+		@CrowPlexus
 	**/
-	public static function getSavePath(folder:String = 'ShadowMario'):String {
+	public static function getSavePath(folder:String = 'FoxaTeam'):String {
 		@:privateAccess
 		return #if (flixel < "5.0.0") folder #else FlxG.stage.application.meta.get('company')
 			+ '/'

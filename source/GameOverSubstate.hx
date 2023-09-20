@@ -58,8 +58,6 @@ class GameOverSubstate extends MusicBeatSubstate
 
 		FlxG.sound.play(Paths.sound(deathSoundName));
 		Conductor.changeBPM(100);
-		// FlxG.camera.followLerp = 1;
-		// FlxG.camera.focusOn(FlxPoint.get(FlxG.width / 2, FlxG.height / 2));
 		FlxG.camera.scroll.set();
 		FlxG.camera.target = null;
 
@@ -83,10 +81,7 @@ class GameOverSubstate extends MusicBeatSubstate
 			camFollowPos.setPosition(FlxMath.lerp(camFollowPos.x, camFollow.x, lerpVal), FlxMath.lerp(camFollowPos.y, camFollow.y, lerpVal));
 		}
 
-		if (controls.ACCEPT)
-		{
-			endBullshit();
-		}
+		if (controls.ACCEPT) endBullshit();
 
 		if (controls.BACK)
 		{
@@ -128,9 +123,9 @@ class GameOverSubstate extends MusicBeatSubstate
 
 	override function beatHit()
 	{
+		// yea nothing, unless you count the super
+		
 		super.beatHit();
-
-		//FlxG.log.add('beat');
 	}
 
 	var isEnding:Bool = false;
