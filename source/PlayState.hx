@@ -269,6 +269,9 @@ class PlayState extends MusicBeatState
 	// Debug buttons
 	private var debugKeysChart:Array<FlxKey>;
 	private var debugKeysCharacter:Array<FlxKey>;
+
+	/// Set Cam Zoom Event
+	var zoomHUDTween:FlxTween;
 	
 	// Less laggy controls
 	private var keysArray:Array<Dynamic>;
@@ -2368,8 +2371,6 @@ class PlayState extends MusicBeatState
 				{
 					songTime = (songTime + Conductor.songPosition) / 2;
 					Conductor.lastSongPos = Conductor.songPosition;
-					// Conductor.songPosition += FlxG.elapsed * 1000;
-					// trace('MISSED FRAME');
 				}
 
 				if(updateTime) {
@@ -2387,8 +2388,6 @@ class PlayState extends MusicBeatState
 						timeTxt.text = FlxStringUtil.formatTime(secondsTotal, false);
 				}
 			}
-
-			// Conductor.lastSongPos = FlxG.sound.music.time;
 		}
 
 		FlxG.camera.zoom = FlxMath.lerp(defaultCamZoom, FlxG.camera.zoom, CoolUtil.boundTo(1 - (elapsed * 3.125 * camZoomingDecay * playbackRate), 0, 1));
@@ -2401,7 +2400,7 @@ class PlayState extends MusicBeatState
 		if (!ClientPrefs.noReset && controls.RESET && !inCutscene && !endingSong)
 		{
 			health = 0;
-			trace("RESET = True");
+			trace("wow death key R");
 		}
 		doDeathCheck();
 
@@ -2607,8 +2606,6 @@ class PlayState extends MusicBeatState
 					timer.active = true;
 				}
 				openSubState(new GameOverSubstate(boyfriend.getScreenPosition().x - boyfriend.positionArray[0], boyfriend.getScreenPosition().y - boyfriend.positionArray[1], camFollowPos.x, camFollowPos.y));
-
-				// MusicBeatState.switchState(new GameOverState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 				
 				#if desktop
 				// Game Over doesn't get his own variable because it's only used here
@@ -2643,7 +2640,6 @@ class PlayState extends MusicBeatState
 
 	public function getControl(key:String) {
 		var pressed:Bool = Reflect.getProperty(controls, key);
-		//trace('Control result: ' + pressed);
 		return pressed;
 	}
 
@@ -2823,9 +2819,21 @@ class PlayState extends MusicBeatState
 					bgGhouls.dance(true);
 					bgGhouls.visible = true;
 				}
+			case 'Set Cam Zoom':
+				if (value2 != '' && value2 != null){
+					if (zoomHUDTween != null) zoomHUDTween.cancel();
+					zoomHUDTween = FlxTween.tween(camGame, {zoom: Std.parseFloat(value1)}, Std.parseFloat(value2), {
+						ease: FlxEase.sineInOut,
+						onComplete: function(twn:FlxTween){
+							zoomHUDTween = null;
+							defaultCamZoom = camGame.zoom;
+						}
+					});
+				}else{
+					defaultCamZoom = Std.parseFloat(value1);
+				}
 
 			case 'Play Animation':
-				//trace('Anim to play: ' + value1);
 				var char:Character = dad;
 				switch(value2.toLowerCase().trim()) {
 					case 'bf' | 'boyfriend':
