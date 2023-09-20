@@ -7,6 +7,7 @@ import flash.media.SoundChannel;
 import flash.media.SoundTransform;
 import flash.net.URLRequest;
 import flixel.FlxBasic;
+import flixel.tweens.FlxTween;
 
 import flixel.math.FlxPoint;
 import flixel.system.FlxAssets.FlxSoundAsset;
@@ -25,6 +26,8 @@ import flash.utils.ByteArray;
 #if (openfl >= "8.0.0")
 import openfl.utils.AssetType;
 #end
+
+using StringTools;
 
 /**
  * This is the universal flixel sound object, used for streaming, music, and sound effects.
