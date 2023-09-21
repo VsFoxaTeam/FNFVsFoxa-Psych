@@ -57,13 +57,6 @@ class FunkinLua {
 	public static var Function_Stop:Dynamic = 1;
 	public static var Function_Continue:Dynamic = 0;
 
-	public static inline var LUA_OK:Int = 0;
-	public static inline var LUA_YIELD:Int = 1;
-	public static inline var LUA_ERRRUN:Int = 2;
-	public static inline var LUA_ERRSYNTAX:Int = 3;
-	public static inline var LUA_ERRMEM:Int = 4;
-	public static inline var LUA_ERRERR:Int = 5;
-
 	#if LUA_ALLOWED
 	public var lua:State = null;
 	#end

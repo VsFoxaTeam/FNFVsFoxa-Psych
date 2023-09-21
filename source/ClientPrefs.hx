@@ -10,9 +10,6 @@ class ClientPrefs {
 	public static var downScroll:Bool = false;
 	public static var middleScroll:Bool = false;
 	public static var showFPS:Bool = true;
-	#if desktop
-	public static var autoPause:Bool = true;
-	#end
 	public static var flashing:Bool = true;
 	public static var fpsRainbow:Bool = false;
 	public static var globalAntialiasing:Bool = true;
@@ -89,9 +86,6 @@ class ClientPrefs {
 		FlxG.save.data.downScroll = downScroll;
 		FlxG.save.data.middleScroll = middleScroll;
 		FlxG.save.data.showFPS = showFPS;
-		#if desktop
-		FlxG.save.data.autoPause = autoPause;
-		#end
 		FlxG.save.data.fpsRainbow = fpsRainbow;
 		FlxG.save.data.flashing = flashing;
 		FlxG.save.data.globalAntialiasing = globalAntialiasing;
@@ -145,11 +139,6 @@ class ClientPrefs {
 				Main.fpsVar.visible = showFPS;
 			}
 		}
-		#if desktop
-		if(FlxG.save.data.autoPause != null) {
-			autoPause = FlxG.save.data.autoPause;
-		}
-		#end
 		if(FlxG.save.data.fpsRainbow != null) {
 			fpsRainbow = FlxG.save.data.fpsRainbow;
 		}

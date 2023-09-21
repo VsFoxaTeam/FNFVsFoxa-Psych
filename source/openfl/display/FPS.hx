@@ -90,7 +90,7 @@ class FPS extends TextField
 			text += "\nMEM: " + memoryMegas + " MB";
 			#end
 
-			text = "\nPsych Engine v0.5.1-foxa";
+			// text = "\nPsych Engine v0.5.1-foxa";
 
 			textColor = 0xFFFFFFFF;
 			if (memoryMegas > 3000 || currentFPS <= ClientPrefs.framerate / 2)
